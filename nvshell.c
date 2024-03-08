@@ -41,6 +41,10 @@ int main (){
         else if (strcmp(input,"exit")==0){
             xit();
         }
+        
+        else {
+            programExec(input);
+        }
 
     }
 
