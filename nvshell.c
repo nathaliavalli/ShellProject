@@ -10,6 +10,7 @@
 #include <errno.h>//For EXIT codes and error handling
 #include "helpers.h"
 
+int isBuiltIn (char * ipt);
 
 int main (){
     char input [50];
@@ -23,29 +24,27 @@ int main (){
         if (input == NULL){
             break;
         }
-        else if (strncmp(input, "cd", 2) == 0) {
-            changeDir(input);
-            continue;
-        }
-        //taking the new line char from user input
+         //taking the new line char from user input
         int idx = strcspn(input, "\n");
         input[idx] = '\0';
 
-        //each built in in use
-        if (strcmp(input,"pwd")==0){
-            getpwd();
+        if (isBuiltIn){
+            builtIn(input);
         }
-        else if (strcmp(input,"help")==0){
-            printHelp();
+       else if (!builtIn){
+        programExec(input);
         }
-        else if (strcmp(input,"exit")==0){
-            xit();
-        }
+
         
-        else {
-            programExec(input);
-        }
-
     }
+    execute_pipeline(input);
+}
 
+
+
+int isBuiltIn (char * ipt){
+    if (strncmp(ipt, "cd", 2) == 0 || strcmp(ipt, "pwd") == 0 || strcmp(ipt, "help") == 0 || strcmp(ipt, "exit") == 0||strcmp(ipt, "wait")==0){
+        return 0;
+    }
+    return 1;
 }

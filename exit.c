@@ -9,5 +9,5 @@
 #include "helpers.h"
 
 void xit (){
-   exit(0);
+   exit(EXIT_SUCCESS);
 }

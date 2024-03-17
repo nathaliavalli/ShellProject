@@ -4,13 +4,20 @@
 #include <errno.h>//For EXIT codes and error handling
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h> //check if file or not
 #include <sys/types.h>
 #include <sys/stat.h> //check if file or not
 #include <sys/wait.h>
 #include "helpers.h"
 
+int isExec(const char *path);
+
+
+
 void programExec (char * input){
-    pid_t pid = fork();
+
+
+    pid_t pid = fork(); //proper use of the fork 
 
     if (pid <0){
         perror("Fork did not work");
@@ -18,16 +25,17 @@ void programExec (char * input){
     }
     else if (pid == 0){//child process
         
+        //stdinandout(input);
+        
+        
         char *args[] = {input, NULL};
         if (execv(input, args) == -1) {
             perror("Exec failed");
             exit(EXIT_FAILURE);
         }
-        else if (strcmp(input,"/")==0){
-
-        }
-        const char* enviVar = getenv("PATH");
-        char * path = parse(enviVar,":");
+        
+        const char* env_Variable = getenv("PATH");
+        char * path = parse(env_Variable,":");// proper use of supplied parser code 
 
         for (int i =0; i< sizeof(path);i++){
             // Construct the full path to the executable
@@ -35,6 +43,7 @@ void programExec (char * input){
             strcpy(fullPath, path[i]);
             strcat(fullPath, "/");
             strcat(fullPath, input);
+            printf('%s',fullPath);
 
             // Check if the executable exists in the current directory
             if (isExec(fullPath)) {
@@ -66,7 +75,7 @@ int isExec(const char *path) {
     // getting information about the file
     if (lstat(path, &st) == 0) {
         // USE MACRO to Check if it is a exec
-        return IS_REG(st.st_mode);
+        return S_ISREG(st.st_mode);
     } else {
         // Handle error (e.g., file not found)
         perror("lstat");
